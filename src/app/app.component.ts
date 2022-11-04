@@ -54,15 +54,22 @@ export class AppComponent{
   }
 
   onChange($event: any, property:string, position:number){
-    console.log($event.target.value, property, position)
 
-    this.object = {
-      index   : position,
-      property: property,
-      value   : $event.target.value
+    let myObj = this.schema.find( el => el.index == position);
+    //si ya existe actualizalo
+    if(myObj){
+      
+      myObj.index    = position;
+      myObj.property = property;
+      myObj.value    = $event.target.value;
+
+    }else{
+
+      //si no existe agregalo
+      this.object = { index   : position, property: property, value   : $event.target.value }
+      this.schema.push( this.object )
+
     }
-
-    this.schema.push( this.object )
 
   }
 
@@ -72,7 +79,6 @@ export class AppComponent{
     let data = { file : this.file, order: this.schema }
 
     this.uploadService.saveData(data).subscribe(resp => {
-      console.log(resp);
       this.first_line = [];
       this.myInput.nativeElement.value = "";
       this.file = null;
